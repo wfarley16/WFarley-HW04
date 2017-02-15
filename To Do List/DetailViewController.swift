@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  DetailViewController.swift
 //  To Do List
 //
 //  Created by William Farley on 2/13/17.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class DetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
