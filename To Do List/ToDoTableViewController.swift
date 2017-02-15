@@ -91,21 +91,33 @@ class ToDoTableViewController: UITableViewController {
     }
     */
 
-    /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
+        
+        if segue.identifier == "ShowDetail" {
+            let indexPath = tableView.indexPathForSelectedRow!
+            let destinationViewController = segue.destination as! DetailViewController
+            let selectedToDo = toDoArray[indexPath.row]
+            destinationViewController.toDoItem = selectedToDo
+        }
     }
-    */
+ 
 
     @IBAction func unwindToTableViewController(sender: UIStoryboardSegue) {
         if let sourceViewController = sender.source as? DetailViewController, let toDoItem = sourceViewController.toDoItem {
+            
+            if let selectedIndexPath = tableView.indexPathForSelectedRow {
+                toDoArray[selectedIndexPath.row] = toDoItem
+                tableView.reloadRows(at: [selectedIndexPath], with: .none)
+
+            } else {
             toDoArray.append(toDoItem)
             let newIndexPath = IndexPath(row: toDoArray.count-1, section: 0)
-            tableView.insertRows(at: [newIndexPath], with: .bottom)
+                tableView.insertRows(at: [newIndexPath], with: .bottom) }
         }
     }
     
