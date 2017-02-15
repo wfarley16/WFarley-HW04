@@ -101,4 +101,12 @@ class ToDoTableViewController: UITableViewController {
     }
     */
 
+    @IBAction func unwindToTableViewController(sender: UIStoryboardSegue) {
+        if let sourceViewController = sender.source as? DetailViewController, let toDoItem = sourceViewController.toDoItem {
+            toDoArray.append(toDoItem)
+            let newIndexPath = IndexPath(row: toDoArray.count-1, section: 0)
+            tableView.insertRows(at: [newIndexPath], with: .bottom)
+        }
+    }
+    
 }
