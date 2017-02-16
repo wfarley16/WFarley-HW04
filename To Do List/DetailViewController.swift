@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DetailViewController: UIViewController {
+class DetailViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var toDoField: UITextField!
     @IBOutlet weak var saveBarButton: UIBarButtonItem!
     
@@ -19,12 +19,42 @@ class DetailViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         
         toDoField.text = toDoItem
+        toDoField.delegate = self
+        toDoField.becomeFirstResponder()
+        
+        if toDoItem?.characters.count == 0 || toDoItem == nil {
+            saveBarButton.isEnabled = false
+        } else {
+            saveBarButton.isEnabled = true
+        }
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    //MARK:- UITextFieldDelegate
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if textField == toDoField {
+            let oldString = textField.text! as NSString
+            let newString = oldString.replacingCharacters(in: range, with: string) as NSString
+            if newString.length == 0 {
+                saveBarButton.isEnabled = false
+            } else {
+                saveBarButton.isEnabled = true
+            }
+        }
+        return true
+    }
+    
+    //MARK:- Navigation
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if saveBarButton == sender as! UIBarButtonItem {
