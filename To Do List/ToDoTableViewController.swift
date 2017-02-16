@@ -10,15 +10,13 @@ import UIKit
 
 class ToDoTableViewController: UITableViewController {
     
-    var toDoArray = ["Learn Swift",
-                     "Build Apps",
-                     "Change The World!",
-                     "Pick Up Groceries"]
+    var toDoArray = [String]()
     
-    var toDoNotes = ["So I can build awesome apps",
-                     "",
-                     "And RULE IT!",
-                     "Hamburger buns, beef, leafy greens, kale"]
+    var toDoNotes = [String]()
+    
+    var defaultsData = UserDefaults.standard
+    
+    @IBOutlet weak var addBarButton: UIBarButtonItem!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +25,16 @@ class ToDoTableViewController: UITableViewController {
         // self.clearsSelectionOnViewWillAppear = false
 
         self.navigationItem.leftBarButtonItem = self.editButtonItem
+        
+        toDoArray = defaultsData.stringArray(forKey: "toDoArray") ?? [String]()
+        toDoNotes = defaultsData.stringArray(forKey: "toDoNotes") ?? [String]()
+        
+        if toDoArray.count == 0 {
+            toDoNotes = [String]()
+        }
+        if toDoNotes.count == 0 {
+            toDoArray = [String]()
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -80,24 +88,45 @@ class ToDoTableViewController: UITableViewController {
             tableView.deleteRows(at: [indexPath], with: .fade)
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+        }
+        defaultsData.set(toDoArray, forKey: "toDoArray")
+        defaultsData.set(toDoNotes, forKey: "toDoNotes")
     }
     
 
-    /*
+    
     // Override to support rearranging the table view.
     override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
+        
+        let itemToMove = toDoArray[fromIndexPath.row]
+        let noteToMove = toDoNotes[fromIndexPath.row]
+        
+        toDoArray.remove(at: fromIndexPath.row)
+        toDoNotes.remove(at: fromIndexPath.row)
+        
+        toDoArray.insert(itemToMove, at: to.row)
+        toDoNotes.insert(noteToMove, at: to.row)
+        
+        defaultsData.set(toDoArray, forKey: "toDoArray")
+        defaultsData.set(toDoArray, forKey: "toDoNotes")
     }
-    */
-
-    /*
+    
+    
     // Override to support conditional rearranging of the table view.
     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
         return true
     }
-    */
+    
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        
+        super.setEditing(editing, animated: animated)
+        
+        if (editing) {
+            addBarButton.isEnabled = false
+        } else {
+            addBarButton.isEnabled = true
+        }
+    }
 
     // MARK: - Navigation
 
@@ -139,6 +168,9 @@ class ToDoTableViewController: UITableViewController {
             let newIndexPath = IndexPath(row: toDoArray.count-1, section: 0)
                 tableView.insertRows(at: [newIndexPath], with: .bottom) }
         }
+        
+        defaultsData.set(toDoArray, forKey: "toDoArray")
+        defaultsData.set(toDoNotes, forKey: "toDoNotes")
     }
     
 }
